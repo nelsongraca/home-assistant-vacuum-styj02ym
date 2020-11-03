@@ -134,7 +134,37 @@ ALL_PROPS = [
     "remember_map",
     "has_map",
     "is_mop",
-    "has_newmap"]
+    "has_newmap",
+    "side_brush_life",
+    "side_brush_hours",
+    "main_brush_life",
+    "main_brush_hours",
+    "hypa_life",
+    "hypa_hours",
+    "mop_life",
+    "mop_hours",
+    "water_percent",
+    "hw_info",
+    "sw_info",
+    "start_time",
+    "order_time",
+    "v_state",
+    "zone_data",
+    "repeat_state",
+    "light_state",
+    "is_charge",
+    "is_work",
+    "cur_mapid",
+    "mop_route",
+    "map_num"]
+
+VACUUM_CARD_PROPS_REFERENCES = {
+    'main_brush_left': 'main_brush_hours',
+    'side_brush_left': 'side_brush_hours',
+    'filter_left': 'hypa_hours',
+    'sensor_dirty_left': 'mop_hours',
+    'cleaned_area': 's_area',
+    'cleaning_time': 's_time'}
 
 
 async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
@@ -384,6 +414,9 @@ class MiroboVacuum2(StateVacuumDevice):
             state = self._vacuum.raw_command('get_prop', ALL_PROPS)
 
             self.vacuum_state = dict(zip(ALL_PROPS, state))
+
+            for prop in VACUUM_CARD_PROPS_REFERENCES.keys():
+                self.vacuum_state[prop] = self.vacuum_state[VACUUM_CARD_PROPS_REFERENCES[prop]]
 
             self._available = True
 
